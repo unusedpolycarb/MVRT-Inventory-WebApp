@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <meta charset="utf-8">
+  <meta name = "description" content = "This is Team 115 MVRT's Web Application">
+  <meta name = "viewport", content = "width=device-width, initial-scale=1.0"
+  <header>
+  <h1>Inventory</h1>
+  </header>
+  <body>
+      <p>Please choose what you are checking inventory of</p>
+      <div class = "choices">
+        <a href = "/toolbox-inventory">
+          <img src="{{url_for('static', filename='images/toolbox.webp')}}" alt = "Toolbox" width="500" height="500">
+        </a>
+        <a href = "/gray-cabinet">
+          <img src="{{url_for('static', filename='images/gray_cabinet.webp')}}" alt = "Grey Cabinet" width="500" height="500">
+        </a>
+        <a href = "/black-cabinet">
+          <img src="{{url_for('static', filename='images/black_cabinet.webp')}}" alt = "Black Cabinet" width="500" height="500">
+        </a>
+      </div>
+  </body>
+</html>

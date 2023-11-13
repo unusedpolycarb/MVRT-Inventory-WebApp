@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <meta charset="utf-8">
+  <meta name = "description" content = "This is Team 115 MVRT's Web Application">
+  <meta name = "viewport", content = "width=device-width, initial-scale=1.0"
+  <header>
+  <h1>Toolbox</h1>
+  <body>
+      <div class="topnav">
+       <input type="text" id = "search" placeholder="Search for a part...">
+      </div>
+      <div class = "toolbox">
+        <img src="{{url_for('static', filename='images/toolbox.webp')}}"  alt = "Toolbox" width="500" height="500">
+        <div class = "drawers">
+          {% for key in toolbox.keys() %}
+            <button class:"btn"> {{key}} </button>
+          {% endfor %}
+        </div>
+      </div>
+    </header>
+      <div class = "partlist">
+        <ul id = "partlist"></ul>
+      </div>
+  </body>
+  <script>
+    var submitneeded = 0;
+    const partslist = document.getElementById('partlist');
+    const displayCharacters = (parts) =>
+    {
+      const htmlString = parts.map((part) =>
+      {
+          return `
+          <li id="${part.name}" class="part">
+              <h2>${part.name}</h2>
+              <p id="${part.name} error" style="display: none;">Unsupported character entered, please enter a number containing digits only (0-9).</p>
+              <p>Quantity:</p><p id="${part.name} quantity" class="quantity" contenteditable="true">${part.quantity}</p><p>${part.unit}</p>
+              <p href = "${part.link}">Link to manufacturer website</p>
+              <button id="${part.name} increase">Increase</button>
+              <button id="${part.name} decrease">Decrease</button>
+              <button id="${part.name} save" style="display: none;">Save</button>
+          </li>
+          `
+      }).join('')
+      if(htmlString.length == 0)
+      {
+        partslist.innerHTML = "<p> No results found. </p>";
+      }
+      else
+      {
+        partslist.innerHTML = htmlString;
+      }
+      var content = document.querySelectorAll('[contenteditable]')
+      for (let i = 0; i < content.length; i++)
+      {
+        let item = content[i];
+        let quantity = document.getElementById(item.parentNode.id.concat(" quantity"))
+        let decrease = document.getElementById(item.parentNode.id.concat(" decrease"))
+        let save = document.getElementById(item.parentNode.id.concat(" save"));
+        let increase = document.getElementById(item.parentNode.id.concat(" increase"))
+        let flash = document.getElementById(item.parentNode.id.concat(" error"));
+        save.addEventListener("click", (e) =>
+        {
+          save.style.display = "none";
+        });
+        decrease.addEventListener("click", (e) =>
+        {
+          newValue = parseInt(quantity.innerHTML) - 1;
+          quantity.innerHTML = newValue.toString();
+          if (newValue < 0)
+          {
+            save.style.display = "none";
+            flash.style.display = "block";
+          }
+          else
+          {
+            save.style.display = "block";
+            flash.style.display = "none";
+          }
+        });
+        increase.addEventListener("click", (e) =>
+        {
+          newValue = parseInt(quantity.innerHTML) + 1;
+          quantity.innerHTML = newValue.toString();
+          if (newValue < 0)
+          {
+            save.style.display = "none";
+            flash.style.display = "block";
+          }
+          else
+          {
+            save.style.display = "block";
+            flash.style.display = "none";
+          }
+        });
+        item.addEventListener("input",  (e) =>
+        {
+          if (isNaN(quantity.innerHTML))
+          {
+            save.style.display = "none";
+            flash.style.display = "block";
+          }
+          else
+          {
+            save.style.display = "block";
+            flash.style.display = "none";
+          }
+        });
+      };
+    };
+    var datatoupdate = [];
+    var data = JSON.parse('{{ toolbox_json | safe }}');
+    var alldata = [];
+    for (var key in data)
+    {
+        alldata = alldata.concat(data[key])
+    };
+    displayCharacters(alldata)
+    const searchbar = document.getElementById('search');
+    searchbar.addEventListener("keyup",  (e) =>
+    {
+      const searchstring = e.target.value.toLowerCase();
+      const filteredparts = alldata.filter((part) =>
+      {
+        if(part.name.toLowerCase().startsWith(searchstring))
+        {
+          return(part);
+        }
+      });
+      displayCharacters(filteredparts);
+    });
+  </script>
+</html>
